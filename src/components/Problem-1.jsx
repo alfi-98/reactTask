@@ -3,10 +3,24 @@ import React, {useState} from 'react';
 const Problem1 = () => {
 
     const [show, setShow] = useState('all');
+    const [name, setName] = useState('');
+    const [status, setStatus] = useState('');
+    const [data, setData] = useState([]);
 
-    const handleClick = (val) =>{
+    const handleClick = (val) => {
         setShow(val);
-    }
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const newData = {
+        name: name,
+        status: status
+        };
+        setData((prevData) => [...prevData, newData]);
+        setName('');
+        setStatus('');
+    };
 
     return (
 
@@ -14,17 +28,31 @@ const Problem1 = () => {
             <div className="row justify-content-center mt-5">
                 <h4 className='text-center text-uppercase mb-5'>Problem-1</h4>
                 <div className="col-6 ">
-                    <form className="row gy-2 gx-3 align-items-center mb-4">
-                        <div className="col-auto">
-                            <input type="text" className="form-control" placeholder="Name"/>
-                        </div>
-                        <div className="col-auto">
-                            <input type="text" className="form-control" placeholder="Status"/>
-                        </div>
-                        <div className="col-auto">
-                            <button type="submit" className="btn btn-primary">Submit</button>
-                        </div>
-                    </form>
+                <form className="row gy-2 gx-3 align-items-center mb-4" onSubmit={handleSubmit}>
+                    <div className="col-auto">
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                    </div>
+                    <div className="col-auto">
+                    <input
+                        type="text"
+                        className="form-control"
+                        placeholder="Status"
+                        value={status}
+                        onChange={(e) => setStatus(e.target.value)}
+                    />
+                    </div>
+                    <div className="col-auto">
+                    <button type="submit" className="btn btn-primary">
+                        Submit
+                    </button>
+                    </div>
+                </form>
                 </div>
                 <div className="col-8">
                     <ul className="nav nav-pills mb-3" id="pills-tab" role="tablist">
@@ -47,8 +75,23 @@ const Problem1 = () => {
                         </tr>
                         </thead>
                         <tbody>
-                        
+                            {data
+                                .filter((item) => show === 'all' || item.status.toLowerCase() === show.toLowerCase())
+                                .sort((a, b) => {
+                                const statusOrder = ['active', 'completed', 'pending', 'archive'];
+                                const statusA = a.status.toLowerCase();
+                                const statusB = b.status.toLowerCase();
+                                return statusOrder.indexOf(statusA) - statusOrder.indexOf(statusB);
+                                })
+                                .map((item, index) => (
+                                <tr key={index}>
+                                    <td>{item.name}</td>
+                                    <td>{item.status}</td>
+                                </tr>
+                                ))}
                         </tbody>
+
+
                     </table>
                 </div>
             </div>
